@@ -15,10 +15,15 @@ jobs:
           java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version: '3.19.0'
           channel: 'stable'
       - run: flutter pub get
-      - run: flutter create . --platforms=android --org com.example.adhkarapp
+      - run: flutter create . --platforms=android --org com.example.adhkarapp --project-name adhkar_app --force
+      - name: Update minSdk
+        run: |
+          if [ -f "android/app/build.gradle" ]; then
+            sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
+          fi
       - run: flutter build apk --release
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
